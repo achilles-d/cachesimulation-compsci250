@@ -7,7 +7,7 @@ int main (int argc, char* argv[]) {
 	int cacheSize, associativity, blockSize;
 
     // Buffer to store instruction (i.e. "load" or "store")
-	char instruction_buffer[5];
+	char instruction_buffer[6];
 
     // Open the trace file in read mode
 	FILE* myFile = fopen(argv[1], "r");
