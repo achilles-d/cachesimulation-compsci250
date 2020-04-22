@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]){
     //Load virtual address
     char * ptr;
-    int virtAddr = strtol(arg[2], &ptr, 16);
+    int virtAddr = strtol(argv[2], &ptr, 16);
     //Load page file
     FILE *pgFile = fopen(argv[1], "r");
     //Load fields from the heading of the page file
