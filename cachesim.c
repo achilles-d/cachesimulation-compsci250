@@ -3,6 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 
+struct block 
+{
+	int tag;
+	int isValid; 
+};  
+
 int main (int argc, char* argv[]) {
 	int cacheSize, associativity, blockSize;
 
@@ -17,6 +23,11 @@ int main (int argc, char* argv[]) {
 	sscanf(argv[3], "%d", &associativity);
 	sscanf(argv[4], "%d", &blockSize);
 
+	// Initialize cache and allocate space in heap for main memory
+	int numSets = (cacheSize << 10) / (blockSize * associativity);
+	struct block cache[numSets][associativity]; 
+	unsigned char *mem = malloc(1024 * 1024 * 16 * sizeof(char));
+
     // Keep reading the instruction until end of file
 	while(fscanf(myFile,"%s", &instruction_buffer)!=EOF) {
 		int currAddress, accessSize;
@@ -24,6 +35,8 @@ int main (int argc, char* argv[]) {
         // Read the address and access size info
 		fscanf(myFile, "%x", &currAddress);
 		fscanf(myFile, "%d", &accessSize);
+
+		
 		
 		if (instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
@@ -40,6 +53,8 @@ int main (int argc, char* argv[]) {
             printf("store 0x%x %d %s\n", currAddress, accessSize, data_buffer);
 		}
 	}
+
+	free(mem);
 
 	return EXIT_SUCCESS;
 }
