@@ -12,32 +12,30 @@ int main(int argc, char *argv[]){
     int virtAddrSize = 0;
     int pageSize = 0;
     fscanf(pgFile, "%d %d", &virtAddrSize, &pageSize);
+    fscanf(pgFile, "%*[^\n]\n");
     //Compute the page offset size and the VPN size
     int pgOffsetSize = log(pageSize) / log(2);
-    //Extract the page offset from the virtual address
-    /*
-    TODO: Extract method
-    */
-    int *pgOffsetBits = malloc(sizeof(int) * pgOffsetSize);
-    int i;
-    for(i = 0; i < pgOffsetSize - 1, i++){
-        int mask = 1 << i;
-        int masked = virtAddr & mask; 
-        int addrBit = masked >> i; 
-        pgOffsetBits[i] = addrBit; 
+    //Create and use bit masks to extract page offset and VPN 
+    int pgOffsetMask = ~((1 << pgOffsetSize) - 1);
+    pgOffsetMask = (pgOffsetMask ^ (1 << (pgOffsetSize - 1)));
+    int pgOffsetBits = pgOffsetMask & virtAddr; 
+    int vpnMask = virtAddr >> (virtAddrSize - pgOffsetSize - 1);
+    int vpnBits = virtAddr & vpnMask; 
+    int ppn = -1; 
+    for(int i = 0; i < vpnBits + 1; i++){
+        fscanf(pgFile, "%d", &ppn);
     }
-    //Extract the VPN from the virtual address
-    /*
-    TODO: Extract method
-    */
-    int *vpnBits = malloc(sizeof(int) * (virtAddrSize - pgOffsetSize));
-    for(i = pgOffsetSize; i < virtAddrSize - 1; i++){
-        int mask = 1 << i;
-        int masked = virtAddr & mask; 
-        int addrBit = masked >> i; 
-        vpnBits[i] = addrBit; 
+    //"Concatenate" the PPN and page offset 
+    ppn = ppn << pgOffsetSize; 
+    ppn = ppn | pgOffsetBits; 
+    //Print the result
+    if(ppn == -1){
+        printf("PAGEFAULT/n");
     }
-
+    else{
+        printf("%.4x", ppn);
+        printf("\n");
+    }
 
     return EXIT_SUCCESS;
 }
