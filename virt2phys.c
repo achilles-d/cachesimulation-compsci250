@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int log2(int n) { int r=0;
+    while (n >>= 1) 
+        r++; 
+    return r;
+}
+
 int main(int argc, char *argv[]){
     //Load virtual address
     char * ptr;
@@ -39,6 +45,3 @@ int main(int argc, char *argv[]){
     return EXIT_SUCCESS;
 }
 
-int log2(int n) { int r=0;
-    while (n>>=1) r++; return r;
-}
