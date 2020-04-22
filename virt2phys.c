@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 int main(int argc, char *argv[]){
     //Load arguments as pointers
-    pgFile_ptr = argv[1];
     int *virtAddr_ptr = argv[2];
     int virtAddr = *virtAddr_ptr;
     //Load page file
-    FILE *pgFile = fopen(*pgFile_ptr, "r");
+    FILE *pgFile = fopen(arg[1], "r");
     //Load fields from the heading of the page file
     int virtAddrSize = 0;
     int pageSize = 0;
