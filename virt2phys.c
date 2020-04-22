@@ -27,9 +27,17 @@ int main(int argc, char *argv[]){
     int vpnMask = virtAddr >> (virtAddrSize - pgOffsetSize - 1);
     int vpnBits = virtAddr & vpnMask; 
     int ppn = -1; 
-    for(int i = 0; i < vpnBits + 1; i++){
-        fscanf(pgFile, "%d", &ppn);
+    //Loop to correct location and read PPN
+    int i; 
+    for(i = 0; i < vpnBits + 1; i++){
+        if(i == (vpnBits - 1)){
+            fscanf(pgFile, "%d", &ppn);
+        }
+        else{
+            fscanf(pgFile, "%*[^\n]\n");
+        }
     }
+    fclose(pgFile);
     //"Concatenate" the PPN and page offset 
     ppn = ppn << pgOffsetSize; 
     ppn = ppn | pgOffsetBits; 
