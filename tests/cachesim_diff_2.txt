@@ -1,0 +1,3 @@
+1,2d0
+< store 0x1 miss
+< load 0x0 hit 00deadbe
