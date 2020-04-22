@@ -7,7 +7,14 @@ struct block
 {
 	int tag;
 	int isValid; 
-};  
+};
+
+int log2(int n) { 
+	int r = 0;
+    while (n >>= 1) 
+        r++; 
+    return r;
+}
 
 int main (int argc, char* argv[]) {
 	int cacheSize, associativity, blockSize;
@@ -36,7 +43,8 @@ int main (int argc, char* argv[]) {
 		fscanf(myFile, "%x", &currAddress);
 		fscanf(myFile, "%d", &accessSize);
 
-		
+		// Extract the block offset from the address
+		int blkOffsetSize = log2(blockSize);
 		
 		if (instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
