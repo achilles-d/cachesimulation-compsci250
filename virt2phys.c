@@ -10,7 +10,7 @@ int log2(int n) { int r=0;
 int main(int argc, char *argv[]){
     //Load virtual address
     char * ptr;
-    int virtAddr = strtol(argv[2], &ptr, 16);
+    int virtAddr = sscanf(argv[2], "%x");
     //Load page file
     FILE *pgFile = fopen(argv[1], "r");
     //Load fields from the heading of the page file
