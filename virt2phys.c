@@ -3,11 +3,11 @@
 #include <math.h>
 
 int main(int argc, char *argv[]){
-    //Load arguments as pointers
-    int *virtAddr_ptr = argv[2];
-    int virtAddr = *virtAddr_ptr;
+    //Load virtual address
+    char * ptr;
+    int virtAddr = strtol(arg[2], &ptr, 16);
     //Load page file
-    FILE *pgFile = fopen(arg[1], "r");
+    FILE *pgFile = fopen(argv[1], "r");
     //Load fields from the heading of the page file
     int virtAddrSize = 0;
     int pageSize = 0;
