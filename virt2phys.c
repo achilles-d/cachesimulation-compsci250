@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 int main(int argc, char *argv[]){
     //Load virtual address
@@ -14,7 +13,7 @@ int main(int argc, char *argv[]){
     fscanf(pgFile, "%d %d", &virtAddrSize, &pageSize);
     fscanf(pgFile, "%*[^\n]\n");
     //Compute the page offset size and the VPN size
-    int pgOffsetSize = log(pageSize) / log(2);
+    int pgOffsetSize = log2(pageSize);
     //Create and use bit masks to extract page offset and VPN 
     int pgOffsetMask = ~((1 << pgOffsetSize) - 1);
     pgOffsetMask = (pgOffsetMask ^ (1 << (pgOffsetSize - 1)));
@@ -38,4 +37,8 @@ int main(int argc, char *argv[]){
     }
 
     return EXIT_SUCCESS;
+}
+
+int log2(int n) { int r=0;
+    while (n>>=1) r++; return r;
 }
