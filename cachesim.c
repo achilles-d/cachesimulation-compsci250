@@ -63,22 +63,27 @@ int main (int argc, char* argv[]) {
 		int notValidIndex = -1;
 		for(i = 0; i < associativity; i++){
 			int currTag = cache[index][i].tag;
-			int isValid = cache[index][i].isValid;
-			if((currTag == targetTag) && (isValid == 0)){
+			int validity = cache[index][i].isValid;
+			if((currTag == targetTag) && (validity == 1)){
 				isHit = 1;
+				setUsedCount[index] = setUsedCount[index] + 1;
+				cache[index][i].orderUsed = setUsedCount[index];
 			}
-			if((isValid == 0) && (notValidIndex == -1)){
+			if((validity == 0) && (notValidIndex == -1)){
 				notValidIndex = i;
 			}
 		}
 		// Handle miss given that a block in the set has valid = 0
 		if((notValidIndex != -1) && (isHit == 0)){
 			cache[index][notValidIndex].isValid = 1; 
-		}
-		// Handle miss given that all blocks in the set have valid = 1
+			cache[index][notValidIndex].tag = targetTag; 
+
+			setUsedCount[index] = setUsedCount[index] + 1;
+			cache[index][notValidIndex].orderUsed = setUsedCount[index];
+		} // Handle miss given that all blocks in the set have valid = 1
 		else if(isHit == 0){
 			int minUsedCount = INT_MAX;
-			int LRUIndex = -1;
+			int LRUIndex = 0;
 			for(i = 0; i < associativity; i++){
 				if(cache[index][i].orderUsed < minUsedCount){
 					minUsedCount = cache[index][i].orderUsed;
@@ -92,7 +97,13 @@ int main (int argc, char* argv[]) {
 
 		if(instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
-			printf("load 0x%x %d\n", currAddress, accessSize);
+			if(isHit == 0){
+				printf("load 0x%x miss %d\n", currAddress, accessSize);
+			}
+			else{
+				printf("load 0x%x hit %d\n", currAddress, accessSize);
+			}
+			
 		}
         else {                              // Else store
             // Buffer to store data to be stored
@@ -102,7 +113,12 @@ int main (int argc, char* argv[]) {
             fscanf(myFile, "%s", &data_buffer);
 
             // Print the store line in the same format as trace file
-            printf("store 0x%x %d %s\n", currAddress, accessSize, data_buffer);
+			if(isHit == 0){
+				printf("store 0x%x miss\n", currAddress, accessSize, data_buffer);
+			}
+			else{
+				printf("store 0x%x hit\n", currAddress, accessSize, data_buffer);;
+			}
 		}
 	}
 
