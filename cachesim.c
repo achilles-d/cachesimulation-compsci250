@@ -45,8 +45,16 @@ int main (int argc, char* argv[]) {
 
 		// Extract the block offset from the address
 		int blkOffsetSize = log2(blockSize);
+		int blkOffsetMask = (1 << blkOffsetSize) - 1;
+		int blkOffset = currAddress & blkOffsetMask; 
+		// Extract the index from the address
+		int indexSize = log2(numSets);
+		int indexMask = (1 << numSets) - 1; 
+		int index = (currAddress >> blkOffsetSize) & indexMask;
+		//Extract the tag from the address
+		int tag = currAddress >> (blkOffsetSize + indexSize);
 		
-		if (instruction_buffer[0]=='l'){    // If load
+		if(instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
 			printf("load 0x%x %d\n", currAddress, accessSize);
 		}
