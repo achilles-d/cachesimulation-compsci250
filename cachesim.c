@@ -35,9 +35,11 @@ int main (int argc, char* argv[]) {
 	sscanf(argv[3], "%d", &associativity);
 	sscanf(argv[4], "%d", &blockSize);
 
-	// Initialize cache and allocate space in heap for main memory
+	// Initialize cache
 	int numSets = (cacheSize << 10) / (blockSize * associativity);
 	struct block cache[numSets][associativity]; 
+	int setLRUCount[numSets];
+	memset(setLRUCount, 0, numSets * sizeof(int));
 	int i, j;
 	for(i = 0; i < numSets; i++){
 		for(j = 0; j < associativity; j++){
@@ -69,36 +71,17 @@ int main (int argc, char* argv[]) {
 		int i;
 		int j = 0;
 		int isHit = 0;
-		int notValidIndex = -1;
 		for(i = 0; i < associativity; i++){
 			int currTag = cache[index][i].tag;
 			int validity = cache[index][i].isValid;
 			if((currTag == targetTag) && (validity == 1)){
 				isHit = 1;
-				
-				for(j = 0; j < associativity; j++){
-					if(j != i){
-						cache[index][j].orderUsed = cache[index][j].orderUsed + 1; 
-					}
-				}
-
-			}
-			if((validity == 0) && (notValidIndex == -1)){
-				notValidIndex = i;
+				setLRUCount[index] = setLRUCount[index] + 1;
+				cache[index][i].orderUsed = setLRUCount[index]; 
 			}
 		}
-		// Handle miss given that a block in the set has valid = 0
-		if((notValidIndex != -1) && (isHit == 0)){
-			cache[index][notValidIndex].isValid = 1; 
-			cache[index][notValidIndex].tag = targetTag; 
-
-			for(i = 0; i < associativity; i++){
-				if(i != notValidIndex){
-					cache[index][i].orderUsed = cache[index][i].orderUsed + 1;
-				} 
-			}
-		} // Handle miss given that all blocks in the set have valid = 1
-		else if(isHit == 0){
+		// Handle a miss
+		if(isHit == 0){
 			int minUsedCount = INT_MAX;
 			int LRUIndex = 0;
 			for(i = 0; i < associativity; i++){
@@ -109,12 +92,11 @@ int main (int argc, char* argv[]) {
 			}
 
 			cache[index][LRUIndex].tag = targetTag;
+			setLRUCount[index] = setLRUCount[index] + 1;
+			cache[index][LRUIndex].orderUsed = setLRUCount[index];
+			cache[index][LRUIndex].isValid = 1; 
 			
-			for(j = 0; j < associativity; j++){
-				if(j != LRUIndex){
-					cache[index][j].orderUsed = cache[index][j].orderUsed + 1; 
-				}
-			}
+			
 		}
 
 		if(instruction_buffer[0]=='l'){    // If load
@@ -127,7 +109,7 @@ int main (int argc, char* argv[]) {
 			}
 			// Print memory data
 			for(i = 0; i < accessSize; i++){
-				printf("%2hhx", mainMem[currAddress + i]);
+				printf("%02x", mainMem[currAddress + i]);
 			}
 			printf("\n");
 			
