@@ -18,8 +18,11 @@ int log2(int n) {
     return r;
 }
 
+
+
 int main (int argc, char* argv[]) {
 	int cacheSize, associativity, blockSize;
+	unsigned char *mainMem = (unsigned char *) malloc(1 << 24);
 
     // Buffer to store instruction (i.e. "load" or "store")
 	char instruction_buffer[6];
@@ -35,8 +38,13 @@ int main (int argc, char* argv[]) {
 	// Initialize cache and allocate space in heap for main memory
 	int numSets = (cacheSize << 10) / (blockSize * associativity);
 	struct block cache[numSets][associativity]; 
-	unsigned char *mem = malloc(1024 * 1024 * 16 * sizeof(char));
-	int setUsedCount[numSets];
+	int i, j;
+	for(i = 0; i < numSets; i++){
+		for(j = 0; j < associativity; j++){
+			struct block blk = {0, 0, 0};
+			cache[i][j] = blk; 
+		}
+	}
     // Keep reading the instruction until end of file
 	while(fscanf(myFile,"%s", &instruction_buffer)!=EOF) {
 		int currAddress, accessSize;
@@ -51,7 +59,7 @@ int main (int argc, char* argv[]) {
 		int blkOffset = currAddress & blkOffsetMask; 
 		// Extract the index from the address
 		int indexSize = log2(numSets);
-		int indexMask = (1 << numSets) - 1; 
+		int indexMask = (1 << indexSize) - 1; 
 		int index = (currAddress >> blkOffsetSize) & indexMask;
 		// Extract the tag from the address
 		int targetTag = currAddress >> (blkOffsetSize + indexSize);
@@ -59,6 +67,7 @@ int main (int argc, char* argv[]) {
 
 		// Search for a matching tag in the appropriate set
 		int i;
+		int j = 0;
 		int isHit = 0;
 		int notValidIndex = -1;
 		for(i = 0; i < associativity; i++){
@@ -66,8 +75,13 @@ int main (int argc, char* argv[]) {
 			int validity = cache[index][i].isValid;
 			if((currTag == targetTag) && (validity == 1)){
 				isHit = 1;
-				setUsedCount[index] = setUsedCount[index] + 1;
-				cache[index][i].orderUsed = setUsedCount[index];
+				
+				for(j = 0; j < associativity; j++){
+					if(j != i){
+						cache[index][j].orderUsed = cache[index][j].orderUsed + 1; 
+					}
+				}
+
 			}
 			if((validity == 0) && (notValidIndex == -1)){
 				notValidIndex = i;
@@ -78,8 +92,11 @@ int main (int argc, char* argv[]) {
 			cache[index][notValidIndex].isValid = 1; 
 			cache[index][notValidIndex].tag = targetTag; 
 
-			setUsedCount[index] = setUsedCount[index] + 1;
-			cache[index][notValidIndex].orderUsed = setUsedCount[index];
+			for(i = 0; i < associativity; i++){
+				if(i != notValidIndex){
+					cache[index][i].orderUsed = cache[index][i].orderUsed + 1;
+				} 
+			}
 		} // Handle miss given that all blocks in the set have valid = 1
 		else if(isHit == 0){
 			int minUsedCount = INT_MAX;
@@ -90,19 +107,29 @@ int main (int argc, char* argv[]) {
 					LRUIndex = i; 
 				}
 			}
-			setUsedCount[index] = setUsedCount[index] + 1;
+
 			cache[index][LRUIndex].tag = targetTag;
-			cache[index][LRUIndex].orderUsed = setUsedCount[index]; 
+			
+			for(j = 0; j < associativity; j++){
+				if(j != LRUIndex){
+					cache[index][j].orderUsed = cache[index][j].orderUsed + 1; 
+				}
+			}
 		}
 
 		if(instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
 			if(isHit == 0){
-				printf("load 0x%x miss %d\n", currAddress, accessSize);
+				printf("load 0x%x miss %d ", currAddress, accessSize);
 			}
 			else{
-				printf("load 0x%x hit %d\n", currAddress, accessSize);
+				printf("load 0x%x hit %d ", currAddress, accessSize);
 			}
+			// Print memory data
+			for(i = 0; i < accessSize; i++){
+				printf("%x", mainMem[currAddress + i]);
+			}
+			printf("\n");
 			
 		}
         else {                              // Else store
@@ -111,18 +138,22 @@ int main (int argc, char* argv[]) {
 
             // Read the data
             fscanf(myFile, "%s", &data_buffer);
+			// Store in memory
+			for(int i = 0; i < accessSize; i++){
+				sscanf(data_buffer + 2 * i, "%2hhx", mainMem + currAddress + i);
+			}
 
             // Print the store line in the same format as trace file
 			if(isHit == 0){
-				printf("store 0x%x miss\n", currAddress, accessSize, data_buffer);
+				printf("store 0x%x miss\n", currAddress);
 			}
 			else{
-				printf("store 0x%x hit\n", currAddress, accessSize, data_buffer);;
+				printf("store 0x%x hit\n", currAddress);
 			}
 		}
+
+		
 	}
-
-	free(mem);
-
+	free(mainMem);
 	return EXIT_SUCCESS;
 }
