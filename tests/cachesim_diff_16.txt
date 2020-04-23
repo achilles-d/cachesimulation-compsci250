@@ -1,4 +1,4 @@
-1,8d0
+1,8c1,8
 < load 0x0 miss 00000000
 < load 0x4 miss 00000000
 < load 0x8 miss 00000000
@@ -7,3 +7,12 @@
 < load 0x14 miss 00000000
 < load 0x18 miss 00000000
 < load 0x1c miss 00000000
+---
+> load 0x0 miss  0 0 0 0
+> load 0x4 miss  0 0 0 0
+> load 0x8 miss  0 0 0 0
+> load 0xc miss  0 0 0 0
+> load 0x10 miss  0 0 0 0
+> load 0x14 miss  0 0 0 0
+> load 0x18 miss  0 0 0 0
+> load 0x1c miss  0 0 0 0

@@ -1,17 +1,32 @@
-1,16d0
+1c1
 < load 0x0 miss 00000000
-< store 0x0 hit
+---
+> load 0x0 miss  0 0 0 0
+3c3
 < load 0x4 hit 00000000
-< store 0x4 hit
+---
+> load 0x4 hit  0 0 0 0
+5c5
 < load 0x8 miss 00000000
-< store 0x8 hit
+---
+> load 0x8 miss  0 0 0 0
+7c7
 < load 0xc hit 00000000
-< store 0xc hit
+---
+> load 0xc hit  0 0 0 0
+9c9
 < load 0x10 miss 00000000
-< store 0x10 hit
+---
+> load 0x10 miss  0 0 0 0
+11c11
 < load 0x14 hit 00000000
-< store 0x14 hit
+---
+> load 0x14 hit  0 0 0 0
+13c13
 < load 0x18 miss 00000000
-< store 0x18 hit
+---
+> load 0x18 miss  0 0 0 0
+15c15
 < load 0x1c hit 00000000
-< store 0x1c hit
+---
+> load 0x1c hit  0 0 0 0

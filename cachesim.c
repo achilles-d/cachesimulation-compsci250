@@ -120,14 +120,14 @@ int main (int argc, char* argv[]) {
 		if(instruction_buffer[0]=='l'){    // If load
             // Print the load line in the same format as trace file
 			if(isHit == 0){
-				printf("load 0x%x miss %d ", currAddress, accessSize);
+				printf("load 0x%x miss ", currAddress);
 			}
 			else{
-				printf("load 0x%x hit %d ", currAddress, accessSize);
+				printf("load 0x%x hit ", currAddress);
 			}
 			// Print memory data
 			for(i = 0; i < accessSize; i++){
-				printf("%x", mainMem[currAddress + i]);
+				printf("%2hhx", mainMem[currAddress + i]);
 			}
 			printf("\n");
 			

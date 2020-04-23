@@ -1,4 +1,4 @@
-1,40d0
+1,40c1,40
 < load 0x0 miss 00
 < load 0x3f hit 00
 < load 0x40 miss 00
@@ -39,3 +39,44 @@
 < load 0x1897 miss 00
 < load 0x2098 miss 00
 < load 0x2899 miss 00
+---
+> load 0x0 miss  0
+> load 0x3f hit  0
+> load 0x40 miss  0
+> load 0x7f hit  0
+> load 0x800 miss  0
+> load 0x83f hit  0
+> load 0x840 miss  0
+> load 0x87f hit  0
+> load 0x0 hit  0
+> load 0x3f hit  0
+> load 0x40 hit  0
+> load 0x7f hit  0
+> load 0x800 hit  0
+> load 0x83f hit  0
+> load 0x840 hit  0
+> load 0x87f hit  0
+> load 0x100a miss  0
+> load 0x104b miss  0
+> load 0x108c miss  0
+> load 0x10cd miss  0
+> load 0x110e miss  0
+> load 0x114f miss  0
+> load 0x94 miss  0
+> load 0x895 miss  0
+> load 0x1096 hit  0
+> load 0x1897 miss  0
+> load 0x2098 miss  0
+> load 0x2899 miss  0
+> load 0x100a hit  0
+> load 0x104b hit  0
+> load 0x108c miss  0
+> load 0x10cd hit  0
+> load 0x110e hit  0
+> load 0x114f hit  0
+> load 0x94 hit  0
+> load 0x895 hit  0
+> load 0x1096 hit  0
+> load 0x1897 hit  0
+> load 0x2098 miss  0
+> load 0x2899 miss  0

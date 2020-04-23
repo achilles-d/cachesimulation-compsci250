@@ -1,3 +1,4 @@
-1,2d0
-< store 0x0 miss
+2c2
 < load 0x1 hit adbeef00
+---
+> load 0x1 hit adbeef 0
