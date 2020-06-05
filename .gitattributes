@@ -1,0 +1,2 @@
+*.css linguist-language=C
+*.py linguist-detectable=false
